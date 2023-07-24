@@ -62,20 +62,28 @@ function draw(){
 
 //bounce ball
 function bounce(){
-    if(y + dy < ballRadius || y + dy > canvas.height - ballRadius){   //bouncing off the top and bottom
-        dy = -dy;
-    }
-    if(x + dx < ballRadius || x + dy > canvas.width - ballRadius){   //bouncing off the left and right
+    if(x + dx < ballRadius || x + dx > canvas.width - ballRadius){   //bouncing off the left and right
         dx = -dx;
+    }
+    if(y + dy < ballRadius){   //bouncing off the top and bottom
+        dy = -dy;
+    }else if(y + dy > canvas.height - ballRadius){
+        if(x > paddleX && x < paddleX + paddleWidth){
+            dy = -dy;
+        }else{
+        alert("GAME OVER!");
+        window.location.reload();
+        clearInterval(interval); //Needed for chrome to end
+        }
     }
 }
 
 //move paddle
 function movePaddle(){
     if(rightPressed){
-        paddleX += 7;
+        paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
     }else if(leftPressed){
-        paddleX -= 7;
+        paddleX = Math.max(paddleX - 7, 0)
     }
 }
-setInterval(draw, 10); //call the function every 10 milliiseconds
+let interval = setInterval(draw, 10); //call the function every 10 milliiseconds
