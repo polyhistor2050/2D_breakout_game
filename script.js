@@ -1,16 +1,27 @@
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
-//define variables
 let x = canvas.width / 2;
 let y = canvas.height - 30;
 let dx = 2;
 let dy = -2;
 let ballRadius = 10;
+let paddleHeight = 10;
+let paddleWidth = 75;
+let paddleX = (canvas.width - paddleWidth) / 2;
 
 //draw ball
 function drawBall(){
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+
+//drawPaddle
+function drawPaddle(){
+    ctx.beginPath();
+    ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
@@ -24,6 +35,7 @@ function draw(){
     x += dx;
     y += dy;
     bounce();
+    drawPaddle();
 }
 
 //bounce ball
