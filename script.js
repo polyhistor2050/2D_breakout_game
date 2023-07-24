@@ -8,6 +8,27 @@ let ballRadius = 10;
 let paddleHeight = 10;
 let paddleWidth = 75;
 let paddleX = (canvas.width - paddleWidth) / 2;
+let rightPressed = false;
+let leftPressed = false;
+
+addEventListener("keydown", keyDownHandler, false);
+addEventListener("keyup", keyUpHandler, false);
+
+function keyDownHandler(e){
+    if(e.key === "Right" || e.key === "ArrowRight"){
+        rightPressed = true;
+    }else if(e.key === "Left" || e.key === "ArrowLeft"){
+        leftPressed = true;
+    }
+}
+
+function keyUpHandler(e){
+    if(e.key === "Right"  || e.key === "ArrowRight"){
+        rightPressed = false;
+    }else if(e.key === "Left" || e.key === "ArrowLeft"){
+        leftPressed = false;
+    }
+}
 
 //draw ball
 function drawBall(){
@@ -36,6 +57,7 @@ function draw(){
     y += dy;
     bounce();
     drawPaddle();
+    movePaddle();
 }
 
 //bounce ball
@@ -48,4 +70,12 @@ function bounce(){
     }
 }
 
+//move paddle
+function movePaddle(){
+    if(rightPressed){
+        paddleX += 7;
+    }else if(leftPressed){
+        paddleX -= 7;
+    }
+}
 setInterval(draw, 10); //call the function every 10 milliiseconds
