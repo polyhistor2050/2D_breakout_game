@@ -10,19 +10,19 @@ let paddleWidth = 75;
 let paddleX = (canvas.width - paddleWidth) / 2;
 let rightPressed = false;
 let leftPressed = false;
-let bricksRowCount = 3;
-let bricksColumCount = 5;
-let bricksWidth = 75;
-let bricksHeight = 20;
-let bricksPadding = 10;
-let bricksOffsetTop = 30;
-let bricksOffsetLeft = 30;
+let brickRowCount = 3;
+let brickColumCount = 5;
+let brickWidth = 75;
+let brickHeight = 20;
+let brickPadding = 10;
+let brickOffsetTop = 30;
+let brickOffsetLeft = 30;
 
 const bricks = [];
-for (let col = 0; col < bricksColumCount; col++){
+for (let col = 0; col < brickColumCount; col++){
     bricks[col] = [];
-    for (let row = 0; row < bricksRowCount; row++){
-        bricks[col][row] = {x: 0, y: 0};
+    for (let row = 0; row < brickRowCount; row++){
+        bricks[col][row] = {x: 0, y: 0,};
     }
 }
 
@@ -37,6 +37,21 @@ function keyDownHandler(e){
     }
 }
 
+//collision detection
+/** function to store bricks objects
+    in everu loop of collision detection  */
+    
+    function collisionDetection(){
+        for (let col = 0; col < brickColumCount; col++){
+            for (let row = 0; row < brickRowCount; row++){
+                const b = bricks[col][row];
+                if(x > b.x && x < b.x + brickWidth && y > b.y && y < b.y  + brickHeight){
+                    dy = -dy;
+                }
+            }
+        }
+    }
+
 function keyUpHandler(e){
     if(e.key === "Right"  || e.key === "ArrowRight"){
         rightPressed = false;
@@ -45,6 +60,8 @@ function keyUpHandler(e){
     }
 }
 
+
+
 //draw ball
 function drawBall(){
     ctx.beginPath();
@@ -52,6 +69,7 @@ function drawBall(){
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
+    
 }
 
 //draw Paddle
@@ -65,14 +83,14 @@ function drawPaddle(){
 
 //draw bricks
 function drawBricks(){
-    for (let col = 0; col < bricksColumCount; col++){
-        for (let row = 0; row < bricksRowCount; row++){
-            const bricksX = col * (bricksWidth + bricksPadding) + bricksOffsetLeft;
-            const bricksY = row * (bricksHeight + bricksPadding) + bricksOffsetTop;
+    for (let col = 0; col < brickColumCount; col++){
+        for (let row = 0; row < brickRowCount; row++){
+            const brickX = col * (brickWidth + brickPadding) + brickOffsetLeft;
+            const brickY = row * (brickHeight + brickPadding) + brickOffsetTop;
             bricks[col][row].x = 0;
             bricks[col][row].y = 0;
             ctx.beginPath();
-            ctx.rect(bricksX, bricksY, bricksWidth, bricksHeight);
+            ctx.rect(brickX, brickY, brickWidth, brickHeight);
             ctx.fillStyle = "#0095DD";
             ctx.fill();
             ctx.closePath();
@@ -91,6 +109,7 @@ function draw(){
     bounce();
     drawPaddle();
     movePaddle();
+    collisionDetection();
 }
 
 //bounce ball
@@ -112,11 +131,12 @@ function bounce(){
 }
 
 //move paddle
-function movePaddle(){
+function movePaddle(){                                                               
     if(rightPressed){
         paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
     }else if(leftPressed){
         paddleX = Math.max(paddleX - 7, 0)
     }
 }
+
 let interval = setInterval(draw, 10); //call the function every 10 milliiseconds
