@@ -22,7 +22,7 @@ const bricks = [];
 for (let col = 0; col < brickColumCount; col++){
     bricks[col] = [];
     for (let row = 0; row < brickRowCount; row++){
-        bricks[col][row] = {x: 0, y: 0,};
+        bricks[col][row] = {x: 0, y: 0, status: 1};
     }
 }
 
@@ -30,27 +30,12 @@ addEventListener("keydown", keyDownHandler, false);
 addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(e){
-    if(e.key === "Right" || e.key === "ArrowRight"){
+    if(e.key == "Right" || e.key == "ArrowRight"){
         rightPressed = true;
-    }else if(e.key === "Left" || e.key === "ArrowLeft"){
+    }else if(e.key == "Left" || e.key == "ArrowLeft"){
         leftPressed = true;
     }
 }
-
-//collision detection
-/** function to store bricks objects
-    in everu loop of collision detection  */
-    
-    function collisionDetection(){
-        for (let col = 0; col < brickColumCount; col++){
-            for (let row = 0; row < brickRowCount; row++){
-                const b = bricks[col][row];
-                if(x > b.x && x < b.x + brickWidth && y > b.y && y < b.y  + brickHeight){
-                    dy = -dy;
-                }
-            }
-        }
-    }
 
 function keyUpHandler(e){
     if(e.key === "Right"  || e.key === "ArrowRight"){
@@ -60,7 +45,55 @@ function keyUpHandler(e){
     }
 }
 
+//collision detection
+/** function to store bricks objects
+    in everu loop of collision detection  */
+    
+// function collisionDetection(){
+//     for (let col = 0; col < brickColumCount; col++){
+//         for (let row = 0; row < brickRowCount; row++){
+//             const b = bricks[col][row];
+//             if(b.status === 1){
+//                 if(     //if the ball hit the one of brick
+//                     x > b.x &&
+//                     x < b.x + brickWidth &&
+//                     y > b.y &&
+//                     y < b.y  + brickHeight
+//                 ){ 
+//                     dy = -dy;
+//                     b.status = 0;
+//                 }
+//             }
+//         }
+//     }
+// }
 
+function collisionDetection() {
+    for (let col = 0; col < brickColumCount; col++) {
+      for (let row = 0; row < brickRowCount; row++) {
+        const b = bricks[col][row];
+        if (b.status === 1) {
+          // Calculate the coordinates of the edges of the brick
+          const brickX = col * (brickWidth + brickPadding) + brickOffsetLeft;
+          const brickY = row * (brickHeight + brickPadding) + brickOffsetTop;
+          const brickRightEdge = brickX + brickWidth;
+          const brickBottomEdge = brickY + brickHeight;
+  
+          // Check for collision
+          if (
+            x + ballRadius > brickX &&
+            x - ballRadius < brickRightEdge &&
+            y + ballRadius > brickY &&
+            y - ballRadius < brickBottomEdge
+          ) {
+            dy = -dy;
+            b.status = 0;
+          }
+        }
+      }
+    }
+  }
+  
 
 //draw ball
 function drawBall(){
@@ -85,15 +118,17 @@ function drawPaddle(){
 function drawBricks(){
     for (let col = 0; col < brickColumCount; col++){
         for (let row = 0; row < brickRowCount; row++){
-            const brickX = col * (brickWidth + brickPadding) + brickOffsetLeft;
-            const brickY = row * (brickHeight + brickPadding) + brickOffsetTop;
-            bricks[col][row].x = 0;
-            bricks[col][row].y = 0;
-            ctx.beginPath();
-            ctx.rect(brickX, brickY, brickWidth, brickHeight);
-            ctx.fillStyle = "#0095DD";
-            ctx.fill();
-            ctx.closePath();
+            if(bricks[col][row].status === 1){
+                const brickX = (col * (brickWidth + brickPadding)) + brickOffsetLeft;
+                const brickY = (row * (brickHeight + brickPadding)) + brickOffsetTop;
+                bricks[col][row].x = 0;
+                bricks[col][row].y = 0;
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = "#0095DD";
+                ctx.fill();
+                ctx.closePath();
+            }
         }
     }
 }
@@ -104,12 +139,12 @@ function draw(){
     drawBricks();
     drawBall();
     //update x and y position
-    x += dx;
-    y += dy;
     bounce();
     drawPaddle();
     movePaddle();
     collisionDetection();
+    x += dx;
+    y += dy;
 }
 
 //bounce ball
@@ -121,21 +156,23 @@ function bounce(){
         dy = -dy;
     }else if(y + dy > canvas.height - ballRadius){
         if(x > paddleX && x < paddleX + paddleWidth){
-            dy = -dy;
+            if(y >= canvas.height - paddleHeight - ballRadius){
+                dy = -dy;
+            }
         }else{
-        alert("GAME OVER!");
-        window.location.reload();
-        clearInterval(interval); //Needed for chrome to end
+            alert("GAME OVER!");
+            document.location.reload();
+            clearInterval(interval); //Needed for chrome to end
         }
     }
 }
 
 //move paddle
 function movePaddle(){                                                               
-    if(rightPressed){
-        paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
-    }else if(leftPressed){
-        paddleX = Math.max(paddleX - 7, 0)
+    if(rightPressed && paddleX < canvas.width - paddleWidth){
+        paddleX += 7;
+    }else if(leftPressed && paddleX > 0){
+        paddleX -= 7;
     }
 }
 
