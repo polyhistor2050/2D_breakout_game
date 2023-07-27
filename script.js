@@ -29,6 +29,7 @@ for (let col = 0; col < brickColumCount; col++){
 
 addEventListener("keydown", keyDownHandler, false);
 addEventListener("keyup", keyUpHandler, false);
+addEventListener("mousemove", mouseMoveHandler, false);
 
 function keyDownHandler(e){
     if(e.key == "Right" || e.key == "ArrowRight"){
@@ -46,10 +47,15 @@ function keyUpHandler(e){
     }
 }
 
-//collision detection
-/** function to store bricks objects
-    in everu loop of collision detection  */
+function mouseMoveHandler(e){
+    const relativeX = e.clientX - canvas.offsetLeft;
+    if(relativeX > 0 && relativeX < canvas.width){
+        paddleX = relativeX - paddleWidth / 2;
+    }
 
+}
+
+//collision detection
 function collisionDetection() {
     for (let col = 0; col < brickColumCount; col++) {
       for (let row = 0; row < brickRowCount; row++) {
