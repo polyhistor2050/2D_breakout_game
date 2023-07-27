@@ -167,9 +167,19 @@ function bounce(){
                 dy = -dy;
             }
         }else{
-            alert("GAME OVER!");
-            document.location.reload();
-            clearInterval(interval); //Needed for chrome to end
+            lives--;
+            if(!lives){   //have no lives, game is over
+                alert("GAME OVER");
+                document.location.reload();
+                clearInterval(interval); //Needed for chrome to end the game
+            }else{    //still have lives, reset the position of the ball
+                x = canvas.width / 2;
+                y = canvas.height - 30;
+                dx = -2;
+                dy = -2;
+                paddleX = (canvas.width - paddleWidth) / 2;
+            }
+            
         }
     }
 }
