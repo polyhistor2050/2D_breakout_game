@@ -81,7 +81,6 @@ function collisionDetection() {
             if(score === brickRowCount * brickColumCount){
                 alert("YOU WIN, CONGRATULATIONS!");
                 document.location.reload();
-                clearInterval(interval); // Need for chrome to end the game
             }
           }
         }
@@ -152,6 +151,8 @@ function draw(){
     collisionDetection();
     x += dx;
     y += dy;
+
+    requestAnimationFrame(draw);
 }
 
 //bounce ball
@@ -171,7 +172,6 @@ function bounce(){
             if(!lives){   //have no lives, game is over
                 alert("GAME OVER");
                 document.location.reload();
-                clearInterval(interval); //Needed for chrome to end the game
             }else{    //still have lives, reset the position of the ball
                 x = canvas.width / 2;
                 y = canvas.height - 30;
@@ -193,4 +193,4 @@ function movePaddle(){
     }
 }
 
-let interval = setInterval(draw, 10); //call the function every 10 milliiseconds
+draw();
