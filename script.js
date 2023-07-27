@@ -17,6 +17,7 @@ let brickHeight = 20;
 let brickPadding = 10;
 let brickOffsetTop = 30;
 let brickOffsetLeft = 30;
+let score = 0;
 
 const bricks = [];
 for (let col = 0; col < brickColumCount; col++){
@@ -74,6 +75,12 @@ function collisionDetection() {
       }
     }
   }
+
+function drawScore(){
+    ctx.font = "16px Arial";
+    ctx.fillStyle =  "0095DD";
+    ctx.fillText(`Score: ${score}`, 8, 20);
+}
   
 
 //draw ball
@@ -121,6 +128,7 @@ function draw(){
     bounce();
     drawPaddle();
     movePaddle();
+    drawScore();
     collisionDetection();
     x += dx;
     y += dy;
