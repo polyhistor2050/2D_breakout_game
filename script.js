@@ -48,25 +48,6 @@ function keyUpHandler(e){
 //collision detection
 /** function to store bricks objects
     in everu loop of collision detection  */
-    
-// function collisionDetection(){
-//     for (let col = 0; col < brickColumCount; col++){
-//         for (let row = 0; row < brickRowCount; row++){
-//             const b = bricks[col][row];
-//             if(b.status === 1){
-//                 if(     //if the ball hit the one of brick
-//                     x > b.x &&
-//                     x < b.x + brickWidth &&
-//                     y > b.y &&
-//                     y < b.y  + brickHeight
-//                 ){ 
-//                     dy = -dy;
-//                     b.status = 0;
-//                 }
-//             }
-//         }
-//     }
-// }
 
 function collisionDetection() {
     for (let col = 0; col < brickColumCount; col++) {
@@ -121,8 +102,6 @@ function drawBricks(){
             if(bricks[col][row].status === 1){
                 const brickX = (col * (brickWidth + brickPadding)) + brickOffsetLeft;
                 const brickY = (row * (brickHeight + brickPadding)) + brickOffsetTop;
-                bricks[col][row].x = 0;
-                bricks[col][row].y = 0;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
                 ctx.fillStyle = "#0095DD";
