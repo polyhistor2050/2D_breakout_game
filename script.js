@@ -18,6 +18,8 @@ let brickPadding = 10;
 let brickOffsetTop = 30;
 let brickOffsetLeft = 30;
 let score = 0;
+let lives = 3;
+
 
 const bricks = [];
 for (let col = 0; col < brickColumCount; col++){
@@ -52,7 +54,6 @@ function mouseMoveHandler(e){
     if(relativeX > 0 && relativeX < canvas.width){
         paddleX = relativeX - paddleWidth / 2;
     }
-
 }
 
 //collision detection
@@ -93,7 +94,13 @@ function drawScore(){
     ctx.fillStyle =  "0095DD";
     ctx.fillText(`Score: ${score}`, 8, 20);
 }
-  
+
+function drawLives(){
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "0095DD";
+    ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
+}
+
 
 //draw ball
 function drawBall(){
@@ -140,6 +147,7 @@ function draw(){
     bounce();
     drawPaddle();
     movePaddle();
+    drawLives();
     drawScore();
     collisionDetection();
     x += dx;
