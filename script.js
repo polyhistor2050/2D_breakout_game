@@ -70,6 +70,7 @@ function collisionDetection() {
           ) {
             dy = -dy;
             b.status = 0;
+            score++;
           }
         }
       }
