@@ -19,6 +19,8 @@ let brickOffsetTop = 30;
 let brickOffsetLeft = 30;
 let score = 0;
 let lives = 3;
+let audio = new Audio("assets/breaking-brick.mp3");
+let collisionCheckInterval = 100;
 
 
 const bricks = [];
@@ -28,6 +30,10 @@ for (let col = 0; col < brickColumCount; col++){
         bricks[col][row] = {x: 0, y: 0, status: 1};
     }
 }
+
+bricks.forEach(brick => {
+    audio.play();
+});
 
 addEventListener("keydown", keyDownHandler, false);
 addEventListener("keyup", keyUpHandler, false);
@@ -78,6 +84,7 @@ function collisionDetection() {
             dy = -dy;
             b.status = 0;
             score++;
+            makeSound();
             if(score === brickRowCount * brickColumCount){
                 alert("YOU WIN, CONGRATULATIONS!");
                 document.location.reload();
@@ -151,7 +158,6 @@ function draw(){
     collisionDetection();
     x += dx;
     y += dy;
-
     requestAnimationFrame(draw);
 }
 
@@ -184,6 +190,7 @@ function bounce(){
     }
 }
 
+
 //move paddle
 function movePaddle(){                                                               
     if(rightPressed && paddleX < canvas.width - paddleWidth){
@@ -193,4 +200,14 @@ function movePaddle(){
     }
 }
 
+function makeSound(){
+    if (audio.paused) {
+        audio.play().catch(error => {
+          console.error('Failed to play audio:', error);
+        });
+      }
+}
+
+setInterval(collisionDetection, collisionCheckInterval);
 draw();
+
