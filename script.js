@@ -20,7 +20,6 @@ let brickOffsetLeft = 30;
 let score = 0;
 let lives = 3;
 let audio = new Audio("assets/breaking-brick.mp3");
-let collisionCheckInterval = 100;
 
 
 const bricks = [];
@@ -32,12 +31,12 @@ for (let col = 0; col < brickColumCount; col++){
 }
 
 bricks.forEach(brick => {
-    audio.play();
+    document.addEventListener("collision", playSound);
 });
 
-addEventListener("keydown", keyDownHandler, false);
-addEventListener("keyup", keyUpHandler, false);
-addEventListener("mousemove", mouseMoveHandler, false);
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+document.addEventListener("mousemove", mouseMoveHandler, false);
 
 function keyDownHandler(e){
     if(e.key == "Right" || e.key == "ArrowRight"){
@@ -84,7 +83,7 @@ function collisionDetection() {
             dy = -dy;
             b.status = 0;
             score++;
-            makeSound();
+            dispatchingCollisionEvent();
             if(score === brickRowCount * brickColumCount){
                 alert("YOU WIN, CONGRATULATIONS!");
                 document.location.reload();
@@ -106,7 +105,6 @@ function drawLives(){
     ctx.fillStyle = "0095DD";
     ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
 }
-
 
 //draw ball
 function drawBall(){
@@ -165,13 +163,16 @@ function draw(){
 function bounce(){
     if(x + dx < ballRadius || x + dx > canvas.width - ballRadius){   //bouncing off the left and right
         dx = -dx;
+        dispatchingCollisionEvent();
     }
     if(y + dy < ballRadius){   //bouncing off the top and bottom
         dy = -dy;
+        dispatchingCollisionEvent();
     }else if(y + dy > canvas.height - ballRadius){
         if(x > paddleX && x < paddleX + paddleWidth){
             if(y >= canvas.height - paddleHeight - ballRadius){
                 dy = -dy;
+                dispatchingCollisionEvent();
             }
         }else{
             lives--;
@@ -191,6 +192,14 @@ function bounce(){
 }
 
 
+function dispatchingCollisionEvent() {
+    const collisionEvent = new Event("collision");
+    document.dispatchEvent(collisionEvent);
+}
+
+document.addEventListener("collision", playSound);
+
+
 //move paddle
 function movePaddle(){                                                               
     if(rightPressed && paddleX < canvas.width - paddleWidth){
@@ -200,14 +209,13 @@ function movePaddle(){
     }
 }
 
-function makeSound(){
+function playSound(){
     if (audio.paused) {
+        audio.currentTime = 0;
         audio.play().catch(error => {
           console.error('Failed to play audio:', error);
         });
       }
 }
 
-setInterval(collisionDetection, collisionCheckInterval);
 draw();
-
